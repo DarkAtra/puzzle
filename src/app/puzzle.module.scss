@@ -1,0 +1,19 @@
+.puzzle {
+  --puzzle-columns: 1;
+  --puzzle-rows: 1;
+  --puzzle-cell-size: 1rem;
+
+  display: grid;
+  gap: .25rem;
+  grid-template-columns: repeat(var(--puzzle-columns), var(--puzzle-cell-size));
+  grid-template-rows: repeat(var(--puzzle-rows), var(--puzzle-cell-size));
+}
+
+.button {
+  padding: .375rem .75rem;
+  background-color: #587498;
+  color: white;
+  border: 1px solid #587498;
+  border-radius: 4px;
+  cursor: pointer;
+}

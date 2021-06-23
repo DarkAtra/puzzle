@@ -1,0 +1,10 @@
+.puzzleCell {
+  --puzzle-cell-color: #fff;
+
+  display: flex;
+  border-radius: 4px;
+  background-color: var(--puzzle-cell-color);
+
+  transition: background-color 0.2s 0s linear;
+  cursor: pointer;
+}

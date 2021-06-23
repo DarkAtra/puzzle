@@ -1,0 +1,34 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+max_line_length = 160
+tab_width = 4
+trim_trailing_whitespace = true
+
+[*.scss]
+indent_size = 2
+indent_style = space
+
+[{*.ats, *.ts, *.tsx}]
+indent_style = space
+ij_typescript_import_sort_module_name = true
+ij_typescript_use_semicolon_after_statement = true
+ij_typescript_force_semicolon_style = true
+ij_typescript_use_double_quotes = false
+ij_typescript_force_quote_style = true
+ij_typescript_enforce_trailing_comma = remove
+
+[{.eslintrc, bowerrc, .babelrc, jest.config, .stylelintrc, *.jsb3, *.jsb2, *.json}]
+indent_size = 2
+indent_style = space
+
+[{pageLayout, *.sht, *.htm, *.html, *.shtm, *.shtml, *.ng}]
+indent_style = space
+
+[{*.yaml, *.yml}]
+indent_size = 2
