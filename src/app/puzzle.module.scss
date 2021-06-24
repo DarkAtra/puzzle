@@ -11,6 +11,12 @@
   grid-template-rows: repeat(var(--puzzle-rows), var(--puzzle-cell-size));
 }
 
+.menu {
+  display: flex;
+  gap: .25rem;
+  margin-bottom: 10px;
+}
+
 .button {
   padding: .375rem .75rem;
   background-color: #587498;

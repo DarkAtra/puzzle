@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {SliceCaseReducers} from '@reduxjs/toolkit/src/createSlice';
 import {Color, nextColor, randomColor} from './color';
 
@@ -11,6 +11,17 @@ export type PuzzleState = {
     columns: number;
     rows: number;
     board: Board;
+    winBoard: Board;
+}
+
+export type MakeMoveAction = PayloadAction<{
+    row: number;
+    column: number;
+}>
+
+export type ShuffleBoardActionPayload = {
+    times: number;
+    duration: number;
 }
 
 export type GenerateBoardAction = PayloadAction<{
@@ -18,10 +29,21 @@ export type GenerateBoardAction = PayloadAction<{
     columns: number;
 }>
 
-export type MakeMoveAction = PayloadAction<{
-    row: number;
-    column: number;
-}>
+export const shuffleBoard = createAsyncThunk(
+    'puzzle/shuffleBoard',
+    (payload: ShuffleBoardActionPayload, thunkAPI) => {
+
+        const {columns, rows} = thunkAPI.getState() as PuzzleState;
+        const {times, duration} = payload;
+
+        for (let i = 0; i < times; i++) {
+            setTimeout(() => thunkAPI.dispatch(makeMove({
+                row: Math.floor(Math.random() * rows),
+                column: Math.floor(Math.random() * columns)
+            })), duration / times * i);
+        }
+    }
+);
 
 export const puzzleSlice = createSlice<PuzzleState, SliceCaseReducers<PuzzleState>>({
     name: 'puzzle',
@@ -29,7 +51,8 @@ export const puzzleSlice = createSlice<PuzzleState, SliceCaseReducers<PuzzleStat
         started: false,
         columns: 0,
         rows: 0,
-        board: {}
+        board: {},
+        winBoard: {}
     },
     reducers: {
 
@@ -46,9 +69,11 @@ export const puzzleSlice = createSlice<PuzzleState, SliceCaseReducers<PuzzleStat
             const left = cellIndex - 1;
             const right = cellIndex + 1;
 
-            let boardChanges = {} as Board;
+            let boardChanges: Board = {
+                [cellIndex]: nextColor(board[cellIndex])
+            };
 
-            if (top > 0) {
+            if (top >= 0) {
                 boardChanges[top] = nextColor(board[top]);
             }
             if (bottom < cells) {
@@ -65,7 +90,6 @@ export const puzzleSlice = createSlice<PuzzleState, SliceCaseReducers<PuzzleStat
                 ...state,
                 board: {
                     ...board,
-                    [cellIndex]: nextColor(board[cellIndex]),
                     ...boardChanges
                 }
             };
@@ -79,25 +103,33 @@ export const puzzleSlice = createSlice<PuzzleState, SliceCaseReducers<PuzzleStat
             const boardColor = randomColor();
             const centerColor = nextColor(boardColor);
 
+            const board = {
+                ...Array(rows * columns)
+                    .fill(boardColor)
+                    .reduce((board: Board, color: Color, index: number) => ({...board, [index]: color}), {}),
+                ...Array(cells).fill(0)
+                    .map((_, index) => index)
+                    .filter((index) => index > columns)
+                    .filter((index) => index % columns !== 0)
+                    .filter((index) => (index - columns + 1) % columns !== 0)
+                    .filter((index) => (rows - 1) * columns > index)
+                    .reduce((board: Board, index: number) => ({...board, [index]: centerColor}), {})
+            };
+
             return {
                 ...state,
                 started: true,
                 rows: rows,
                 columns: columns,
-                board: {
-                    ...Array(rows * columns)
-                        .fill(boardColor)
-                        .reduce((board: Board, color: Color, index: number) => ({...board, [index]: color}), {}),
-                    ...Array(cells).fill(0)
-                        .map((_, index) => index)
-                        .filter((index) => index > columns)
-                        .filter((index) => index % columns !== 0)
-                        .filter((index) => (index - columns + 1) % columns !== 0)
-                        .filter((index) => (rows - 1) * columns > index)
-                        .reduce((board: Board, index: number) => ({...board, [index]: centerColor}), {})
-                }
+                board: board,
+                winBoard: board
             };
         }
+    },
+
+    extraReducers: (builder) => {
+        builder.addCase(shuffleBoard.fulfilled, () => {
+        });
     }
 });
 
