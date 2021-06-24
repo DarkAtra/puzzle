@@ -9,7 +9,7 @@ import * as serviceWorker from './serviceWorker';
 ReactDOM.render(
     <React.StrictMode>
         <Provider store={store}>
-            <Puzzle cellSize={'8rem'}/>
+            <Puzzle maxWidth={'min(350px, 80vw)'} maxHeight={'min(350px, 80vh)'}/>
         </Provider>
     </React.StrictMode>,
     document.getElementById('root')

@@ -1,20 +1,19 @@
 import React, {CSSProperties} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {PuzzleCell} from './puzzle-cell/puzzle-cell';
-import {clickCell, generateBoard, PuzzleState} from './puzzle-slice';
+import {generateBoard, makeMove, PuzzleState} from './puzzle-slice';
 import styles from './puzzle.module.scss';
 
 export type PuzzleProps = {
-    cellSize: string;
+    maxWidth: string;
+    maxHeight: string;
 }
 
 export const Puzzle = (props: PuzzleProps) => {
 
     const started = useSelector((state: PuzzleState) => state.started);
-
     const columns = useSelector((state: PuzzleState) => state.columns);
     const rows = useSelector((state: PuzzleState) => state.rows);
-
     const board = useSelector((state: PuzzleState) => state.board);
 
     const dispatch = useDispatch();
@@ -27,13 +26,15 @@ export const Puzzle = (props: PuzzleProps) => {
     }
 
     const {
-        cellSize
+        maxWidth,
+        maxHeight
     } = props;
 
     const cssVariables = {
         '--puzzle-columns': columns,
         '--puzzle-rows': rows,
-        '--puzzle-cell-size': cellSize
+        '--puzzle-max-width': maxWidth,
+        '--puzzle-max-height': maxHeight
     } as CSSProperties;
 
     return started ? (
@@ -42,7 +43,7 @@ export const Puzzle = (props: PuzzleProps) => {
             {Array(rows).fill(0).map((_, row) =>
                 Array(columns).fill(0).map((_, column) => {
                     const cellIndex = row * columns + column;
-                    return <PuzzleCell key={`${row}-${column}`} color={board[cellIndex]} onClick={() => dispatch(clickCell({row, column}))}/>;
+                    return <PuzzleCell key={`${row}-${column}`} color={board[cellIndex]} onClick={() => dispatch(makeMove({row, column}))}/>;
                 })
             )}
 

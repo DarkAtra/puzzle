@@ -1,10 +1,12 @@
 .puzzle {
   --puzzle-columns: 1;
   --puzzle-rows: 1;
-  --puzzle-cell-size: 1rem;
+  --puzzle-max-width: 100px;
+  --puzzle-max-height: 100px;
+  --puzzle-cell-size: calc(min(var(--puzzle-max-height), var(--puzzle-max-width)) / var(--puzzle-columns));
 
   display: grid;
-  gap: .25rem;
+  gap: calc(var(--puzzle-cell-size) * 0.05);
   grid-template-columns: repeat(var(--puzzle-columns), var(--puzzle-cell-size));
   grid-template-rows: repeat(var(--puzzle-rows), var(--puzzle-cell-size));
 }

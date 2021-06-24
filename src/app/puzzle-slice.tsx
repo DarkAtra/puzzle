@@ -18,7 +18,7 @@ export type GenerateBoardAction = PayloadAction<{
     columns: number;
 }>
 
-export type ClickCellAction = PayloadAction<{
+export type MakeMoveAction = PayloadAction<{
     row: number;
     column: number;
 }>
@@ -33,13 +33,13 @@ export const puzzleSlice = createSlice<PuzzleState, SliceCaseReducers<PuzzleStat
     },
     reducers: {
 
-        clickCell: (state: PuzzleState, action: ClickCellAction) => {
+        makeMove: (state: PuzzleState, action: MakeMoveAction) => {
 
             const {rows, columns, board} = state;
             const cells = rows * columns;
 
             const {row, column} = action.payload;
-            const cellIndex = row * rows + column;
+            const cellIndex = row * columns + column;
 
             const top = cellIndex - columns;
             const bottom = cellIndex + columns;
@@ -92,7 +92,7 @@ export const puzzleSlice = createSlice<PuzzleState, SliceCaseReducers<PuzzleStat
                         .map((_, index) => index)
                         .filter((index) => index > columns)
                         .filter((index) => index % columns !== 0)
-                        .filter((index) => (index - columns + 1) % 4 !== 0)
+                        .filter((index) => (index - columns + 1) % columns !== 0)
                         .filter((index) => (rows - 1) * columns > index)
                         .reduce((board: Board, index: number) => ({...board, [index]: centerColor}), {})
                 }
@@ -101,5 +101,5 @@ export const puzzleSlice = createSlice<PuzzleState, SliceCaseReducers<PuzzleStat
     }
 });
 
-export const {clickCell, generateBoard} = puzzleSlice.actions;
+export const {makeMove, generateBoard} = puzzleSlice.actions;
 export const puzzleReducers = puzzleSlice.reducer;
